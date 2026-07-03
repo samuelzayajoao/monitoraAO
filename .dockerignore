@@ -1,0 +1,47 @@
+# Git and version control
+.git
+.gitignore
+
+# Python caches and byte-code
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local configuration and secret files
+.env
+*.env
+
+# SQLite local databases (so you don't overwrite production data)
+*.sqlite3
+*.db
+
+# Django media files and collected static assets
+# (Exclude if you manage media via S3/Cloud storage and build static elsewhere)
+media/
+staticfiles/
+
+# Testing, coverage, and linting tools
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docker build notes/logs
+Dockerfile
+docker-compose.yml
+*.log
