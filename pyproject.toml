@@ -8,6 +8,7 @@ dependencies = [
     "django>=6.0.6",
     "django-ninja>=1.6.2",
     "django-ninja-extra>=0.31.5",
+    "whitenoise>=6.12.0",
 ]
 
 
@@ -65,9 +66,6 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
-
-# Like Black, indent with spaces, rather than tabs.
-indent-style = "tab"
 
 # Like Black, respect magic trailing commas.
 skip-magic-trailing-comma = false
