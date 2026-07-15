@@ -21,7 +21,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 # Application definition
 
-INSTALLED_EXTERNAL_APPS = ["ninja_extra"]
+INSTALLED_EXTERNAL_APPS = ["ninja_extra", "django_celery_beat"]
 
 INSTALLED_PROJECT_APPS = ["apps.auths"]
 
@@ -87,10 +87,24 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379",
+        "LOCATION": env("REDIS_URL", default="redis://redis:6379"),
         # configure password and username
     }
 }
+
+# CELERY
+CELERY_BROKER_URL = f"amqp://{env('RABBITMQ_DEFAULT_USER', default='guest')}:{env('RABBITMQ_DEFAULT_PASS', default='guest')}@rabbitmq:5672"
+CELERY_RESULT_BACKEND = env("REDIS_URL")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+# Configure DatabaseScheduler for dynamic updates via the admin panel
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
