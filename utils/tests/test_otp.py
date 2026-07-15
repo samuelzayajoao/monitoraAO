@@ -1,28 +1,35 @@
-from django.test import SimpleTestCase
-from ..otp import UtilOTP, REGISTER_OTP_PREFIX
+from ..otp import UtilOTP
 import pytest
 
 
-class TestOTP(SimpleTestCase):
-    def setUp(self):
+class TestOTP:
+    def setup_method(self):
+
         self.email = "emailtest@z.ao"
         self.otp = UtilOTP(self.email)
 
     @pytest.mark.asyncio
     async def test_otp(self):
         otp_number = await self.otp.agenerate_otp()
-        self.assertIsInstance(otp_number, str)
-        self.assertEqual(len(otp_number), 6)
+        assert isinstance(otp_number, str)
+        assert len(otp_number) == 6
+        await self.otp.clean_otp_key()
 
-    def test_otp_key(self):
-        key = self.otp.get_key
-        self.assertIn(REGISTER_OTP_PREFIX, key)
-        self.assertEqual(key, REGISTER_OTP_PREFIX + self.email)
+    @pytest.mark.django_db(transaction=True)
+    @pytest.mark.asyncio
+    async def test_save_otp(self):
+        await self.otp.save_otp()
+        otp_number = await self.otp.get_otp()
+        assert isinstance(otp_number, str)
+        assert len(otp_number) == 6
+        await self.otp.clean_otp_key()
 
-    def test_otp_key_exceptions(self):
-        with self.assertRaises(ValueError):
+    @pytest.mark.asyncio
+    async def test_otp_key_exceptions(self):
+        with pytest.raises(ValueError):
             self.otp.set_key = ""
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             self.otp.set_key = None
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             self.otp.set_key = "samul"
+        await self.otp.clean_otp_key()

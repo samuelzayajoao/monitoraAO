@@ -1,7 +1,7 @@
 from ninja_extra import api_controller, route
 from injector import inject
 from ..services import AuthServices
-from ..schemas import EmailIn
+from ..schemas import EmailIn, UserIn
 
 
 @api_controller(
@@ -13,7 +13,11 @@ class AuthController:
     def __init__(self, auth_services: AuthServices):
         self.auth_services = auth_services
 
-    @route.post("/otp", summary="Register email user", description="Register email user and send OTP to email")
+    @route.post(
+        "/otp",
+        summary="Register email user",
+        description="Register email user and send OTP to email",
+    )
     async def register_email(self, request, email: EmailIn):
         """
         Args:
@@ -22,9 +26,16 @@ class AuthController:
         """
         return await self.auth_services.register_email(request, email.email)
 
-    @route.post("/otp/validate", summary="Validate OTP", description="Validate OTP for email user")
-    async def validate_otp(self, request):
-        pass
+    @route.post(
+        "/register", summary="Validate OTP", description="Validate OTP for email user"
+    )
+    async def register_complete(self, request, user_in: UserIn):
+        """
+        Args:
+            request (_type_): _description_
+            user_in (UserIn): _description_
+        """
+        return await self.auth_services.register_complete(request, user_in)
 
 
 controllers = (AuthController,)

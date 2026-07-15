@@ -37,10 +37,9 @@ class UtilOTP:
             raise er
 
     async def save_otp(self):
-
         try:
             if await self.has_otp_key():
-                raise ValueError("Key not Found")
+                raise ValueError("Key AlreadyExists")
             otp = await self.agenerate_otp()
             await cache.aset(self.get_key, otp, 180)  # 3 minute
         except ValueError as vr:
@@ -56,3 +55,6 @@ class UtilOTP:
 
     async def has_otp_key(self):
         return await sync_to_async(cache.has_key)(self.get_key)
+
+    async def clean_otp_key(self):
+        return await sync_to_async(cache.delete)(self.get_key)

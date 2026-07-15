@@ -1,3 +1,3 @@
-from .register import controllers
+from .register import controllers, AuthController
 
-__all__ = ["controllers"]
+__all__ = ["controllers", "AuthController"]

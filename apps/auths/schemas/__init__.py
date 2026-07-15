@@ -1,3 +1,3 @@
-from .register import EmailIn
+from .register import EmailIn, UserIn
 
-__all__ = ["EmailIn"]
+__all__ = ["EmailIn", "UserIn"]
