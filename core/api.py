@@ -9,4 +9,9 @@ api = NinjaExtraAPI(
 )
 
 
-api.register_controllers(*(AuthController, CustomJWTController,))
+api.register_controllers(
+    *(
+        AuthController,
+        CustomJWTController,
+    )
+)

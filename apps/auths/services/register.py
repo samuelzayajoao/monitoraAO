@@ -72,7 +72,7 @@ class AuthServices:
         if not secrets.compare_digest(existent_otp, otp):
             raise HttpError(401, "OTP nao pertece a esse email")
         await object_otp.clean_otp_key()
-        
+
         User = get_user_model()
         user, created = await User.objects.aget_or_create(
             defaults={

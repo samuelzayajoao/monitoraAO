@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class EmailIn(BaseModel):
     email: EmailStr = Field(title="Email", description="User valid email")
 
@@ -44,8 +45,8 @@ class UserIn(BaseModel):
             raise ValueError("OTP not numeric")
         return cleaned_otp
 
-class UserOut(ModelSchema):
 
+class UserOut(ModelSchema):
     class Meta:
         model = User
         fields = ["email", "first_name", "last_name"]
