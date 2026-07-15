@@ -72,7 +72,7 @@ services:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
-      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
       AMQP_URL: ${AMQP_URL}
     volumes:
       - .:/app
@@ -94,7 +94,7 @@ services:
       - .:/app
     environment:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
-      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
     depends_on:
       redis:
         condition: service_healthy
@@ -112,7 +112,7 @@ services:
       - .:/app
     environment:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
-      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
     depends_on:
       redis:
         condition: service_healthy
@@ -147,7 +147,7 @@ services:
     container_name: flower
     environment:
       CELERY_BROKER_URL: ${CELERY_BROKER_URL}
-      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
       FLOWER_BASIC_AUTH: ${FLOWER_BASIC_AUTH}
     ports:
       - "5555:5555"
