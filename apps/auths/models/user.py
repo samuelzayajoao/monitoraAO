@@ -83,3 +83,5 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = _("usuario")
         verbose_name_plural = _("usuarios")
+        app_label = "auths"
+        swappable = "AUTH_USER_MODEL"
