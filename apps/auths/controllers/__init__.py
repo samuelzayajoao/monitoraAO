@@ -1,3 +1,4 @@
-from .register import controllers, AuthController
+from .register import AuthController
+from .jwt import CustomJWTController
 
-__all__ = ["controllers", "AuthController"]
+__all__ = ["AuthController", "CustomJWTController"]

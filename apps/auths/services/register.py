@@ -7,9 +7,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 
 
-User = get_user_model()
-
-
 class AuthServices:
     async def register_email(self, request, email):
         """
@@ -76,6 +73,7 @@ class AuthServices:
             raise HttpError(401, "OTP nao pertece a esse email")
         await object_otp.clean_otp_key()
 
+        User = get_user_model()
         user, created = await User.objects.aget_or_create(
             defaults={
                 "password": make_password(password.get_secret_value()),
@@ -90,3 +88,6 @@ class AuthServices:
             if not created
             else Response({"detail": "Registo efetuado."}, status=201)
         )
+
+    async def user_profile(self, user):
+        return user

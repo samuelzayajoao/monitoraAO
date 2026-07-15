@@ -1,7 +1,8 @@
 from ninja_extra import api_controller, route
 from injector import inject
 from ..services import AuthServices
-from ..schemas import EmailIn, UserIn
+from ..schemas import EmailIn, UserIn, UserOut
+from ninja_jwt.authentication import AsyncJWTAuth
 
 
 @api_controller(
@@ -37,5 +38,6 @@ class AuthController:
         """
         return await self.auth_services.register_complete(request, user_in)
 
-
-controllers = (AuthController,)
+    @route.get("/profile", auth=AsyncJWTAuth(), response={200: UserOut})
+    async def user_profile(self, request):
+        return await self.auth_services.user_profile(request.user)

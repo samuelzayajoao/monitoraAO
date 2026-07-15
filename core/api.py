@@ -1,5 +1,5 @@
 from ninja_extra import NinjaExtraAPI
-from apps.auths.controllers import controllers
+from apps.auths.controllers import AuthController, CustomJWTController
 
 api = NinjaExtraAPI(
     title="MonitoraAO",
@@ -9,4 +9,9 @@ api = NinjaExtraAPI(
 )
 
 
-api.register_controllers(*controllers)
+api.register_controllers(
+    *(
+        AuthController,
+        CustomJWTController,
+    )
+)

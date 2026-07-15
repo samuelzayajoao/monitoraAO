@@ -1,5 +1,10 @@
 from pydantic import Field, BaseModel, EmailStr, field_validator, SecretStr
 from typing import Optional
+from ninja import ModelSchema
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class EmailIn(BaseModel):
@@ -39,3 +44,9 @@ class UserIn(BaseModel):
         if not cleaned_otp.isnumeric():
             raise ValueError("OTP not numeric")
         return cleaned_otp
+
+
+class UserOut(ModelSchema):
+    class Meta:
+        model = User
+        fields = ["email", "first_name", "last_name"]
