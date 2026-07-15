@@ -59,6 +59,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: ${DEBUG}
@@ -66,21 +68,102 @@ services:
       DATABASE_ENGINE: ${DATABASE_ENGINE}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
-
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      AMQP_URL: ${AMQP_URL}
     volumes:
       - .:/app
     env_file:
       - .env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
-      interval: 20s
+      interval: 10s
       timeout: 10s
       retries: 5
       start_period: 10s
-    
+
+  # 3. Main Celery Worker
+  celery_worker:
+    build: .
+    command: celery -A core.celery_app worker --loglevel=info
+    container_name: celery_worker
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 4. Celery Beat (Periodic/Scheduled Tasks Scheduler)
+  celery_beat:
+    build: .
+    command: celery -A core.celery_app beat --loglevel=info
+    container_name: celery_beat
+    volumes:
+      - .:/app
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # App connection port
+      - "15672:15672" # Management UI port
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s # Give RabbitMQ time to fully boot up
+    volumes:
+      - rabbitmq_storage:/var/lib/rabbitmq
+
+  flower:
+    image: mher/flower
+    container_name: flower
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_BROKER_URL}
+      FLOWER_BASIC_AUTH: ${FLOWER_BASIC_AUTH}
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5555/"]
+      interval: 10s      
+      timeout: 5s        
+      retries: 3         
+      start_period: 5s   
+    env_file:
+      - .env
+    entrypoint: [] # Limpa o entrypoint original da imagem
+    command: ["celery", "flower", "--broker=${CELERY_BROKER_URL}", "--port=5555", "--auto_refresh=True", "--auto_refresh_interval=3000"]
+  
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_storage:
