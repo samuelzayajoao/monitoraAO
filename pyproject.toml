@@ -5,9 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "amqp>=5.3.1",
     "django>=6.0.6",
     "django-ninja>=1.6.2",
     "django-ninja-extra>=0.31.5",
+    "pytest>=9.1.1",
+    "whitenoise>=6.12.0",
 ]
 
 
@@ -66,11 +69,15 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 # Like Black, use double quotes for strings.
 quote-style = "double"
 
-# Like Black, indent with spaces, rather than tabs.
-indent-style = "tab"
-
 # Like Black, respect magic trailing commas.
 skip-magic-trailing-comma = false
 
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
+
+# -- Example FILE: pyproject.toml
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "core.settings"
+python_files = ["test_*.py", "*_test.py"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
