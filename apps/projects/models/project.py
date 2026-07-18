@@ -68,6 +68,8 @@ class ProjectAPIKey(models.Model):
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
     expired_at = models.DateTimeField(_("Expired at"))
 
+    is_active = models.BooleanField(_("Activo"), default=True)
+
     def __str__(self):
         return f"{self.project.name}: <{self.api_key}>"
 
