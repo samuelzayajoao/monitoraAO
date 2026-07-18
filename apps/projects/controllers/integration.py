@@ -26,4 +26,4 @@ class IntegrationController:
 
     @route.delete("/delete-api-key/{project_id}")
     async def delete_api_key(self, request, project_id: uuid.UUID):
-        return {"message": "API key deleted"}
+        return await self.integration_service.delete_api_key(request, project_id)
