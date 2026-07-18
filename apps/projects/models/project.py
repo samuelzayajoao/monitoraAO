@@ -59,7 +59,9 @@ class ProjectAPIKey(models.Model):
         blank=False,
         editable=False,
     )
-    project = models.OneToOneField(Project, on_delete=models.CASCADE)
+    project = models.OneToOneField(
+        Project, on_delete=models.CASCADE, related_name="project"
+    )
     api_key = models.CharField(
         _("API Key"), max_length=100, unique=True, editable=False, default=""
     )
