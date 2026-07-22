@@ -1,11 +1,11 @@
 from ..models import ProjectAPIKey, Project
-from secrets import token_urlsafe
 from django.shortcuts import get_object_or_404
 from asgiref.sync import sync_to_async
 from ninja.errors import HttpError
 from django.utils import timezone
 import logging
 from ninja.responses import Response
+from ..secret.key import APIKeyEngine
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +17,18 @@ class IntegrationService:
             Project, user=request.user, pk=project_id
         )
 
+        api_key_engine = APIKeyEngine()
+        try:
+            api_key = api_key_engine.generate_basic_key()
+        except Exception:
+            raise HttpError(500, "Erro ao gerar a chave de api")
+
         try:
             project_api_key, created = await ProjectAPIKey.objects.aget_or_create(
                 project=project,
                 defaults={
                     "expired_at": timezone.timedelta(days=2) + timezone.now(),
-                    "api_key": token_urlsafe() + ".ZA",
+                    "api_key": api_key,
                 },
             )
             if not created:
