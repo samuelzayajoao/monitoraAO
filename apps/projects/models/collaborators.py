@@ -22,6 +22,7 @@ class Collaborator(models.Model):
     role = models.CharField(
         _("Collaborator"), choices=RoleChoices.choices, default=RoleChoices.SECONDARY
     )
+    status = models.BooleanField(_("Accepted"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
