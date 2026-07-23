@@ -1,5 +1,6 @@
 from .project import ProjectIn, ProjectOut, ProjectUpdate
 from .integration import ProjectAPIKeyOut, ProjectAPIKeyDetailsOut
+from .collaborators import CollaboratorInviteSchema
 
 __all__ = [
     "ProjectIn",
@@ -7,4 +8,5 @@ __all__ = [
     "ProjectUpdate",
     "ProjectAPIKeyOut",
     "ProjectAPIKeyDetailsOut",
+    "CollaboratorInviteSchema"
 ]
