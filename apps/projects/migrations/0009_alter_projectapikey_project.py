@@ -5,15 +5,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('projects', '0008_projectapikey_is_active'),
+        ("projects", "0008_projectapikey_is_active"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='projectapikey',
-            name='project',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='api_key', to='projects.project'),
+            model_name="projectapikey",
+            name="project",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="api_key",
+                to="projects.project",
+            ),
         ),
     ]
