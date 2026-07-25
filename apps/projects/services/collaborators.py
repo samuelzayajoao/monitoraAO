@@ -89,13 +89,17 @@ class CollaboratorService:
         pass
 
     async def list_my_invitation(self, user):
-        invitations = await sync_to_async(get_list_or_404)(Collaborator, user=user, status=False)
+        invitations = await sync_to_async(get_list_or_404)(
+            Collaborator, user=user, status=False
+        )
         return invitations
 
-    def accept_my_invitation_atomic(self, user,  invitation_id):
+    def accept_my_invitation_atomic(self, user, invitation_id):
         try:
             with transaction.atomic():
-                obj = Collaborator.objects.select_for_update().filter(user=user, pk=invitation_id, status=False)
+                obj = Collaborator.objects.select_for_update().filter(
+                    user=user, pk=invitation_id, status=False
+                )
 
                 if not obj.exists():
                     raise HttpError(404, "Invitation not found")
@@ -107,11 +111,14 @@ class CollaboratorService:
             raise HttpError(500, "Nao foi possivel aceitar o convite")
 
     async def accept_my_invitation(self, user, invitation_id):
-        await sync_to_async(self.accept_my_invitation_atomic)(user=user, invitation_id=invitation_id)
+        await sync_to_async(self.accept_my_invitation_atomic)(
+            user=user, invitation_id=invitation_id
+        )
         return Response("Invitation Accepted", status=200)
 
     async def reject_my_invitation(self, user, invitation_id):
-        obj = await sync_to_async(get_object_or_404)(Collaborator, user=user, pk=invitation_id, status=False)
+        obj = await sync_to_async(get_object_or_404)(
+            Collaborator, user=user, pk=invitation_id, status=False
+        )
         await obj.adelete()
         return Response("Invitation deleted", status=200)
-

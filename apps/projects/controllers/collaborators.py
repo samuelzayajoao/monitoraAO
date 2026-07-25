@@ -33,7 +33,7 @@ class CollaboratorController:
         path="/me/invite",
         summary="List collaborator invitations",
         description="List collaborator invitations",
-        response=List[CollaboratorOut]
+        response=List[CollaboratorOut],
     )
     async def list_my_invitation(self, request):
         """
@@ -41,7 +41,6 @@ class CollaboratorController:
         """
         return await self.collaborator_service.list_my_invitation(request.user)
 
-  
     @route.get(
         path="/invite/{invitation_id}",
         summary="Get invitation by id",
@@ -51,7 +50,6 @@ class CollaboratorController:
         """
         Get Project Collaborator invitation by id
         """
-
         return await self.collaborator_service.get_invitation()
 
     @route.delete(
@@ -82,25 +80,29 @@ class CollaboratorController:
         path="/me/invite/{invitation_id}/accept",
         summary="Accept invitation by id",
         description="Accept invitation by id",
-        response=str
+        response=str,
     )
     async def accept_my_invitation(self, request, invitation_id: int):
         """
         Collaborator accepts invitation by id
         """
-        return await self.collaborator_service.accept_my_invitation(request.user, invitation_id)
+        return await self.collaborator_service.accept_my_invitation(
+            request.user, invitation_id
+        )
 
     @route.put(
         path="/me/invite/{invitation_id}/reject",
         summary="Collaborator rejects invitation by id",
         description="Collaborator rejects invitation by id",
-        response=str
+        response=str,
     )
     async def reject_my_invitation(self, request, invitation_id: int):
         """
         Collaborator rejects invitation by id
         """
-        return await self.collaborator_service.reject_my_invitation(request.user, invitation_id)
+        return await self.collaborator_service.reject_my_invitation(
+            request.user, invitation_id
+        )
 
     @route.get(
         path="/{project_id}",

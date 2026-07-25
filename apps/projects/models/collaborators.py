@@ -37,7 +37,7 @@ class Collaborator(models.Model):
     def asave(self, *args, **kwargs):
         self._validate_project_user_and_collaborator_not_same()
         return super().asave(*args, **kwargs)
-    
+
     def _validate_project_user_and_collaborator_not_same(self):
         if self.user == self.project.user:
             raise IntegrityError("project owner can not be a project collaborator")
