@@ -41,17 +41,6 @@ class CollaboratorController:
         """
         return await self.collaborator_service.list_my_invitation(request.user)
 
-    @route.get(
-        path="/invite/{invitation_id}",
-        summary="Get invitation by id",
-        description="Get invitation by id",
-    )
-    async def get_invitation(self, invitation_id: int):
-        """
-        Get Project Collaborator invitation by id
-        """
-        return await self.collaborator_service.get_invitation()
-
     @route.delete(
         path="/invite/{invitation_id}",
         summary="Delete invitation by id",
@@ -62,19 +51,6 @@ class CollaboratorController:
         Delete Project Collaborator invitation by id
         """
         return await self.collaborator_service.delete_invitation()
-
-    @route.put(
-        path="/invite/{invitation_id}",
-        summary="Update invitation by id",
-        description="Update invitation by id",
-    )
-    async def update_invitation(
-        self, invitation_id: int, payload: CollaboratorInviteSchema
-    ):
-        """
-        Update Project Collaborator invitation by id
-        """
-        return await self.collaborator_service.update_invation()
 
     @route.put(
         path="/me/invite/{invitation_id}/accept",

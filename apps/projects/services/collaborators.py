@@ -76,15 +76,6 @@ class CollaboratorService:
 
         return Response("Convite foi criando e enviado.", status=201)
 
-    async def list_invitation(self):
-        pass
-
-    async def get_invitation(self):
-        pass
-
-    async def delete_invitation(self):
-        pass
-
     async def update_invation(self):
         pass
 
