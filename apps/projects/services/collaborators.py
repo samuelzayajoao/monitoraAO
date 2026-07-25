@@ -3,6 +3,11 @@ from django.shortcuts import get_object_or_404
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from ninja.responses import Response
+from ninja.errors import HttpError
+import logging
+from django.http import Http404
+
+logger = logging.Logger(__name__)
 
 User = get_user_model()
 
@@ -16,6 +21,10 @@ class CollaboratorService:
                 project__id=project_id,
             )
         )
+
+        if not collaborators:
+            raise HttpError(404, "Nao existe nunhum colaborador")
+
         return collaborators
 
     async def get_collaborator(self, user, project_id, collaborator_id):
@@ -24,8 +33,22 @@ class CollaboratorService:
         )
         return collaborator
 
-    async def delete_collaborator(self):
-        pass
+    async def delete_collaborator(self, user, project_id, collaborator_id):
+
+        try:
+            collaborator = await self.get_collaborator(
+                user, project_id, collaborator_id
+            )
+            await collaborator.adelete()
+        except HttpError as hr:
+            raise hr
+        except Http404 as hr404:
+            raise hr404
+        except Exception as e:
+            logger.error(f"Erro ao deletar o colaborador by {user.email}: {e}")
+            raise HttpError(500, "Nao foi possivel remover Colaborador")
+
+        return Response("Colaborador foi removido")
 
     async def create_collaborator(self, user, payload):
 

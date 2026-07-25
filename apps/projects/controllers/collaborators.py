@@ -58,15 +58,20 @@ class CollaboratorController:
         )
 
     @route.delete(
-        path="/{collaborator_id}",
+        path="/{project_id}/{collaborator_id}",
         summary="Delete collaborator by id",
         description="Delete collaborator by id",
+        response=str,
     )
-    async def delete_collaborator(self, collaborator_id: int):
+    async def delete_collaborator(
+        self, request, project_id: UUID, collaborator_id: int
+    ):
         """
         Delete Project Collaborator by id
         """
-        return await self.collaborator_service.delete_collaborator()
+        return await self.collaborator_service.delete_collaborator(
+            request.user, project_id, collaborator_id
+        )
 
     @route.get(
         path="/invite", summary="List invitations", description="List invitations"
