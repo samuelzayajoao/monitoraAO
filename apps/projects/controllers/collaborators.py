@@ -45,15 +45,16 @@ class CollaboratorController:
         return await self.collaborator_service.list_collaborators(request.user, project_id)
 
     @route.get(
-        path="/{collaborator_id}",
+        path="/{project_id}/{collaborator_id}",
         summary="Get collaborator by id",
-        description="Get collaborator by id"
+        description="Get collaborator by id",
+        response=CollaboratorOut
     )
-    async def get_collaborator(self, collaborator_id: int):
+    async def get_collaborator(self, request, project_id: UUID, collaborator_id: int):
         """
         Get Project Collaborator by id
         """
-        return await self.collaborator_service.get_collaborator()
+        return await self.collaborator_service.get_collaborator(request.user, project_id, collaborator_id)
 
     @route.delete(
         path="/{collaborator_id}",

@@ -16,13 +16,13 @@ class CollaboratorService:
             Collaborator.objects.filter(
                 project__user=user, 
                 project__id=project_id, 
-                status=True
                 )
             )
         return collaborators
 
-    async def get_collaborator(self):
-        pass
+    async def get_collaborator(self, user, project_id, collaborator_id):
+        collaborator = await sync_to_async(get_object_or_404)(Collaborator, project__user=user, project__pk=project_id, pk=collaborator_id)
+        return collaborator 
 
     async def delete_collaborator(self):
         pass
