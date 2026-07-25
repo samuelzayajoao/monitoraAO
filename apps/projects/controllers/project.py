@@ -32,6 +32,6 @@ class ProjectController:
     async def delete_project(self, request, project_id: UUID):
         return await self.project_services.delete_project(request.user, project_id)
 
-    @route.get("/list", response={200: List[ProjectOut]})
+    @route.get("/", response={200: List[ProjectOut]})
     async def list_projects(self, request):
         return await self.project_services.list_projects(request.user)
