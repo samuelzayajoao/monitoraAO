@@ -1,5 +1,5 @@
 from ..models import Project, Collaborator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from ninja.responses import Response
@@ -87,8 +87,9 @@ class CollaboratorService:
     async def update_invation(self):
         pass
 
-    async def list_my_invitation(self):
-        pass
+    async def list_my_invitation(self, user):
+        invitations = await sync_to_async(get_list_or_404)(Collaborator, user=user, status=False)
+        return invitations
 
     async def accept_my_invitation(self):
         pass

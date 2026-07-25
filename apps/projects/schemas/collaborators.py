@@ -25,4 +25,4 @@ class CollaboratorOut(ModelSchema):
 
     @field_validator("user")
     def validate_user(cls, user):
-        return user.get_full_name()
+        return user.get_full_name() or user.email
