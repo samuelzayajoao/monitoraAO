@@ -9,5 +9,5 @@ __all__ = [
     "ProjectAPIKeyOut",
     "ProjectAPIKeyDetailsOut",
     "CollaboratorInviteSchema",
-    "CollaboratorOut"
+    "CollaboratorOut",
 ]
