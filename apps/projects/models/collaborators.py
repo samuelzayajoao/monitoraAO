@@ -30,6 +30,18 @@ class Collaborator(models.Model):
     def __str__(self):
         return f"{self.project.name} - {self.user.get_full_name()}"
 
+    def save(self, *args, **kwargs):
+        self._validate_project_user_and_collaborator_not_same()
+        return super().save(*args, **kwargs)
+
+    def asave(self, *args, **kwargs):
+        self._validate_project_user_and_collaborator_not_same()
+        return super().asave(*args, **kwargs)
+    
+    def _validate_project_user_and_collaborator_not_same(self):
+        if self.user == self.project.user:
+            raise IntegrityError("project owner can not be a project collaborator")
+
     class Meta:
         verbose_name = _("Collaborator")
         verbose_name_plural = _("Collaborators")

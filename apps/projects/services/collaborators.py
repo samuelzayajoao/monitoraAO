@@ -56,6 +56,9 @@ class CollaboratorService:
         email = payload.email
         role = payload.role
 
+        if user.email == email:
+            raise HttpError(400, "User cant invite himself")
+
         collaborator = await sync_to_async(get_object_or_404)(User, email=email)
         project = await sync_to_async(get_object_or_404)(
             Project, id=project_id, user=user
