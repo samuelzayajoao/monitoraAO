@@ -90,7 +90,7 @@ class CollaboratorController:
             request.user, invitation_id
         )
 
-    @route.put(
+    @route.delete(
         path="/me/invite/{invitation_id}/reject",
         summary="Collaborator rejects invitation by id",
         description="Collaborator rejects invitation by id",
