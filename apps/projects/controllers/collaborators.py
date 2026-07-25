@@ -1,8 +1,12 @@
 from ninja_extra.controllers import api_controller, route
 from injector import inject
 from ..services import CollaboratorService
-from ..schemas import CollaboratorInviteSchema
+from ..schemas import CollaboratorInviteSchema, CollaboratorOut
+from typing import List
 from ninja_jwt.authentication import AsyncJWTAuth
+from uuid import UUID
+from ninja_extra.pagination import paginate, PageNumberPaginationExtra, NinjaPaginationResponseSchema
+
 
 
 @api_controller(
@@ -16,23 +20,36 @@ class CollaboratorController:
     def __init__(self, collaborator_service: CollaboratorService):
         self.collaborator_service = collaborator_service
 
-    @route.get(
+    @route.post(
         path="",
-        summary="List collaborators",
-        description="List collaborators"
+        summary="Send invitation to collaborator",
+        description="Send invitation to collaborator",
+        response=str
     )
-    async def list_collaborators(self):
+    async def create_collaborator(self, request, payload: CollaboratorInviteSchema):
+        """
+        Send invitation to collaborator
+        """
+        return await self.collaborator_service.create_collaborator(request.user, payload)
+
+    @route.get(
+        path="/{project_id}",
+        summary="List collaborators",
+        description="List collaborators",
+        response=List[CollaboratorOut]
+    )
+    async def list_collaborators(self, request, project_id: UUID):
         """
         List Project Collaborators
         """
-        return await self.collaborator_service.list_collaborators()
+        return await self.collaborator_service.list_collaborators(request.user, project_id)
 
     @route.get(
         path="/{collaborator_id}",
         summary="Get collaborator by id",
         description="Get collaborator by id"
     )
-    async def get_collaborator(self, collaborator_id: int): 
+    async def get_collaborator(self, collaborator_id: int):
         """
         Get Project Collaborator by id
         """
@@ -48,17 +65,6 @@ class CollaboratorController:
         Delete Project Collaborator by id
         """
         return await self.collaborator_service.delete_collaborator()
-
-    @route.post(
-        path="/invite",
-        summary="Send invitation to collaborator",
-        description="Send invitation to collaborator",
-    )
-    async def invite_collaborator(self, request, payload: CollaboratorInviteSchema):
-        """
-        Send invitation to collaborator
-        """
-        return await self.collaborator_service.invite_collaborator()
 
     @route.get(
         path="/invite",
@@ -106,7 +112,7 @@ class CollaboratorController:
         """
         return await self.collaborator_service.update_invation()
 
-    
+
     @route.get(
         path="/me/invite",
         summary="List collaborator invitations",
