@@ -6,6 +6,7 @@ from ninja.responses import Response
 from ninja.errors import HttpError
 import logging
 from django.http import Http404
+from django.db import transaction
 
 logger = logging.Logger(__name__)
 
@@ -91,8 +92,24 @@ class CollaboratorService:
         invitations = await sync_to_async(get_list_or_404)(Collaborator, user=user, status=False)
         return invitations
 
-    async def accept_my_invitation(self):
-        pass
+    def accept_my_invitation_atomic(self, user,  invitation_id):
+        try:
+            with transaction.atomic():
+                obj = Collaborator.objects.select_for_update().filter(user=user, pk=invitation_id, status=False)
+
+                if not obj.exists():
+                    raise HttpError(404, "Invitation not found")
+                obj.update(status=True)
+        except HttpError as hr:
+            raise hr
+        except Exception as er:
+            logger.error(f"erro ao executar a transaction: {er}")
+            raise HttpError(500, "Nao foi possivel aceitar o convite")
+
+    async def accept_my_invitation(self, user, invitation_id):
+        await sync_to_async(self.accept_my_invitation_atomic)(user=user, invitation_id=invitation_id)
+        return Response("Invitation Accepted", status=200)
+
 
     async def reject_my_invitation(self):
         pass

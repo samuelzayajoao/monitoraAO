@@ -82,12 +82,13 @@ class CollaboratorController:
         path="/me/invite/{invitation_id}/accept",
         summary="Accept invitation by id",
         description="Accept invitation by id",
+        response=str
     )
     async def accept_my_invitation(self, request, invitation_id: int):
         """
         Collaborator accepts invitation by id
         """
-        return await self.collaborator_service.accept_my_invitation()
+        return await self.collaborator_service.accept_my_invitation(request.user, invitation_id)
 
     @route.put(
         path="/me/invite/{invitation_id}/reject",
