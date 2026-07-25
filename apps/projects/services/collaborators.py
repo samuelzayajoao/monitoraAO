@@ -110,6 +110,8 @@ class CollaboratorService:
         await sync_to_async(self.accept_my_invitation_atomic)(user=user, invitation_id=invitation_id)
         return Response("Invitation Accepted", status=200)
 
+    async def reject_my_invitation(self, user, invitation_id):
+        obj = await sync_to_async(get_object_or_404)(Collaborator, user=user, pk=invitation_id, status=False)
+        await obj.adelete()
+        return Response("Invitation deleted", status=200)
 
-    async def reject_my_invitation(self):
-        pass
