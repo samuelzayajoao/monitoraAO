@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('projects', '0012_collaborator'),
+        ("projects", "0012_collaborator"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='collaborator',
-            constraint=models.UniqueConstraint(fields=('project', 'user'), name='unique_collaborator_for_same_project'),
+            model_name="collaborator",
+            constraint=models.UniqueConstraint(
+                fields=("project", "user"), name="unique_collaborator_for_same_project"
+            ),
         ),
     ]

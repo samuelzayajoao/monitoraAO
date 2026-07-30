@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('projects', '0013_collaborator_unique_collaborator_for_same_project'),
+        ("projects", "0013_collaborator_unique_collaborator_for_same_project"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='collaborator',
-            name='status',
-            field=models.BooleanField(default=False, verbose_name='Accepted'),
+            model_name="collaborator",
+            name="status",
+            field=models.BooleanField(default=False, verbose_name="Accepted"),
         ),
     ]
