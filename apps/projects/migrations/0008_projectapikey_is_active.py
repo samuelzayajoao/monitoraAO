@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('projects', '0007_alter_project_id'),
+        ("projects", "0007_alter_project_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='projectapikey',
-            name='is_active',
-            field=models.BooleanField(default=True, verbose_name='Activo'),
+            model_name="projectapikey",
+            name="is_active",
+            field=models.BooleanField(default=True, verbose_name="Activo"),
         ),
     ]
