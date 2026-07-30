@@ -24,7 +24,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 INSTALLED_EXTERNAL_APPS = ["ninja_jwt", "ninja_extra", "django_celery_beat"]
 
-INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects"]
+INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales"]
 
 INSTALLED_APPS = (
     [
