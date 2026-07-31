@@ -1,6 +1,11 @@
 from ninja_extra import NinjaExtraAPI
 from apps.auths.controllers import AuthController, CustomJWTController
-from apps.projects.controllers import ProjectController, IntegrationController
+from apps.projects.controllers import (
+    ProjectController,
+    IntegrationController,
+    CollaboratorController,
+)
+from apps.sales.controllers import SalesController
 
 api = NinjaExtraAPI(
     title="MonitoraAO",
@@ -10,11 +15,10 @@ api = NinjaExtraAPI(
 )
 
 
+api.register_controllers(*(AuthController, CustomJWTController))
+
 api.register_controllers(
-    *(
-        AuthController,
-        CustomJWTController,
-    )
+    *(ProjectController, IntegrationController, CollaboratorController)
 )
 
-api.register_controllers(*(ProjectController, IntegrationController))
+api.register_controllers(*(SalesController,))
