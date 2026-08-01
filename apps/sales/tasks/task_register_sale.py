@@ -42,7 +42,6 @@ def task_register_sale(key):
         for sale in sales
     ]
 
-
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"chat_{view_key}",
@@ -51,4 +50,3 @@ def task_register_sale(key):
             "data": to_json_safe(data),
         },
     )
-    

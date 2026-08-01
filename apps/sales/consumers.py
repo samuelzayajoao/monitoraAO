@@ -8,29 +8,29 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from ..projects.models import Collaborator
-        
+
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        collaborator = await Collaborator.objects.select_related("project").filter(project__view_key=self.room_name).afirst()
+        collaborator = (
+            await Collaborator.objects.select_related("project")
+            .filter(project__view_key=self.room_name)
+            .afirst()
+        )
 
         if not collaborator:
             await self.close()
             raise ValueError("Nao e um colaborador")
-   
+
         await sync_to_async(print)(collaborator.project.view_key)
         self.room_group_name = f"chat_{collaborator.project.view_key}"
 
         # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name, self.channel_name 
-        )
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
 
     async def disconnect(self, close_code):
         # Leave room group
-        await self.channel_layer.group_discard(
-            self.room_group_name, self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     # Receive message from WebSocket
     async def receive(self, text_data):
