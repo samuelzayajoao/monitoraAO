@@ -139,6 +139,20 @@ NINJA_JWT = {
     "TOKEN_VERIFY_INPUT_SCHEMA": "ninja_jwt.schema.TokenVerifyInputSchema",
 }
 
+
+# CHANNELS
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [{
+                "address": "redis://redis:6379",
+                "socket_timeout": None,  # volta ao comportamento antigo: espera indefinida
+            }],
+        },
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 

@@ -5,7 +5,6 @@ from ninja.errors import HttpError
 from ..projects.models import Project
 from django.shortcuts import get_object_or_404
 
-
 class MonitoraAPIKey(AsyncAPIKeyHeader):
     param_name = "Monitora-API-Key"
 
@@ -21,3 +20,27 @@ class MonitoraAPIKey(AsyncAPIKeyHeader):
         project = get_object_or_404(Project, project__api_key=key)
         request.META["project"] = project
         return super().authenticate(request, key)
+
+def get_dashboard_sale(project_id):
+    from .models import Sales
+    from django.db.models import F, Sum
+
+    sales = ( 
+        Sales.objects
+        .select_related("project")
+        .filter(project__pk=project_id)
+        .aggregate(
+            total=Sum( F("product_price") * F("product_quantity") )
+        )
+    )
+
+    return sales
+
+
+
+def to_json_safe(data):
+    import json
+    from django.core.serializers.json import DjangoJSONEncoder
+
+    """Converte Decimal, datetime, UUID, etc. para tipos serializáveis por msgpack."""
+    return json.loads(json.dumps(data, cls=DjangoJSONEncoder))

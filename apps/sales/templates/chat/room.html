@@ -1,0 +1,317 @@
+<!-- chat/templates/chat/room.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Vendas em tempo real</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A1224;
+    --surface: #111B32;
+    --surface-2: #16213D;
+    --border: #223159;
+    --text: #EDF1F9;
+    --muted: #8A96B8;
+    --gold: #E7B750;
+    --mint: #35D0A0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(231, 183, 80, 0.07), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(53, 208, 160, 0.06), transparent 40%);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 1.25rem 1rem 3rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ---- Header ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .brand h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .brand span {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(53, 208, 160, 0.1);
+    border: 1px solid rgba(53, 208, 160, 0.35);
+    color: var(--mint);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mint);
+    animation: pulse 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  /* ---- Hero total ---- */
+  .hero {
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem 1.5rem 1.35rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -15%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(231,183,80,0.16), transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  .hero-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    color: var(--gold);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---- Feed ---- */
+  .feed-header {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0 0 0.75rem 0.1rem;
+  }
+
+  #sales-feed {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .sale-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1.1rem;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .sale-row:last-child { border-bottom: none; }
+
+  .sale-main {
+    min-width: 0;
+  }
+
+  .sale-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sale-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sale-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .empty-state {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .sale-row.new-entry {
+    animation: printIn 0.5s ease-out;
+  }
+
+  @keyframes printIn {
+    from { opacity: 0; transform: translateY(-10px); background: rgba(53, 208, 160, 0.12); }
+    to   { opacity: 1; transform: translateY(0); background: transparent; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(53,208,160,0.5); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(53,208,160,0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sale-row.new-entry, .live-dot { animation: none; }
+  }
+
+  @media (max-width: 420px) {
+    .sale-price { font-size: 0.9rem; }
+    .hero { padding: 1.25rem 1.1rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>monitoramentoAO</h1>
+        <span id="room-label">·</span>
+      </div>
+      <div class="live-pill"><span class="live-dot"></span> Ao vivo</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-label">Total acumulado</div>
+      <div class="hero-value" id="total-value">Kz --</div>
+    </div>
+
+    <div class="feed-header">Vendas recentes</div>
+    <div id="sales-feed">
+      <div class="empty-state">À espera da primeira venda…</div>
+    </div>
+  </div>
+
+  {{ room_name|json_script:"room-name" }}
+  <script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    document.getElementById('room-label').textContent = roomName;
+
+    const socket = new WebSocket(
+      'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+    );
+
+    function formatMoney(value) {
+      const n = Number(value);
+      if (isNaN(n)) return 'Kz ' + value;
+      return 'Kz ' + n.toLocaleString('pt-AO', { minimumFractionDigits: 2 });
+    }
+
+    function renderSale(sale, isNew) {
+      const row = document.createElement('div');
+      row.className = 'sale-row' + (isNew ? ' new-entry' : '');
+
+      const main = document.createElement('div');
+      main.className = 'sale-main';
+
+      const name = document.createElement('div');
+      name.className = 'sale-name';
+      name.textContent = sale.product_name;
+
+      const meta = document.createElement('div');
+      meta.className = 'sale-meta';
+      const time = new Date(sale.sold_at).toLocaleTimeString('pt-AO', { hour: '2-digit', minute: '2-digit' });
+      meta.textContent = sale.product_quantity + ' un · ' + time;
+
+      main.appendChild(name);
+      main.appendChild(meta);
+
+      const price = document.createElement('div');
+      price.className = 'sale-price';
+      price.textContent = formatMoney(sale.product_price);
+
+      row.appendChild(main);
+      row.appendChild(price);
+      return row;
+    }
+
+    function updateDashboard(data, isNew) {
+      document.getElementById('total-value').textContent =
+        formatMoney(data.statistics.total ?? 0);
+
+      const feed = document.getElementById('sales-feed');
+      feed.innerHTML = '';
+
+      if (!data.recent_sales.length) {
+        feed.innerHTML = '<div class="empty-state">À espera da primeira venda…</div>';
+        return;
+      }
+
+      data.recent_sales.forEach((sale, i) => {
+        feed.appendChild(renderSale(sale, isNew && i === 0));
+      });
+    }
+
+    socket.onmessage = function (e) {
+      const payload = JSON.parse(e.data);
+      if (payload.type === 'sale_event') {
+        updateDashboard(payload.data, true);
+      }
+    };
+
+    socket.onopen = () => console.log('WebSocket ligado a', roomName);
+    socket.onerror = (err) => console.error('Erro no WebSocket:', err);
+    socket.onclose = () => console.error('Ligação fechada inesperadamente');
+  </script>
+</body>
+</html>
