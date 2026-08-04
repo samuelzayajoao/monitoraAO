@@ -22,4 +22,3 @@ def task_register_sale(key):
         raise e
 
     send_to_group_collaborators(sales)
-    
