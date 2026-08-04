@@ -73,7 +73,7 @@ class ProjectAPIKey(models.Model):
     is_active = models.BooleanField(_("Activo"), default=True)
 
     def __str__(self):
-        return f"{self.project.name}: <{self.api_key}>"
+        return f"{self.project.name}: <{self.api_key}>"  # remover api key para que so seja accessivel por API e nao A
 
     class Meta:
         verbose_name = _("Project API Key")

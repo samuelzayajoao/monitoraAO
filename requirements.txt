@@ -1,10 +1,12 @@
 amqp==5.3.1
 annotated-types==0.7.0
 anyio==4.14.1
-asgiref==3.11.1
+asgiref==3.12.1
 billiard==4.2.4
 celery==5.6.3
 cffi==2.1.0
+channels==4.3.2
+channels-redis==4.3.0
 click==8.4.2
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
@@ -12,7 +14,7 @@ click-repl==0.3.0
 contextlib2==21.6.0
 cron-descriptor==1.4.5
 cryptography==49.0.0
-django==6.0.6
+django==6.0.7
 django-celery-beat==2.9.0
 django-celery-results==2.6.0
 django-environ==0.14.0
@@ -32,6 +34,7 @@ idna==3.18
 iniconfig==2.3.0
 injector==0.24.0
 kombu==5.6.2
+msgpack==1.2.1
 packaging==26.2
 pluggy==1.6.0
 prometheus-client==0.25.0
@@ -52,7 +55,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
 pytz==2026.2
 pyyaml==6.0.3
-redis==8.0.1
+redis==8.1.0
 ruff==0.15.20
 six==1.17.0
 sqlparse==0.5.5

@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.core.cache import cache
 from ..models import Sales
+from ..utils import send_to_group_collaborators
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,3 +20,5 @@ def task_register_sale(key):
     except Exception as e:
         logger.error(f"Erro ao salvar as vendas da chave {key}: {e}")
         raise e
+
+    send_to_group_collaborators(sales)

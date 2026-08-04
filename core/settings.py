@@ -22,7 +22,12 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 # Application definition
 
-INSTALLED_EXTERNAL_APPS = ["ninja_jwt", "ninja_extra", "django_celery_beat"]
+INSTALLED_EXTERNAL_APPS = [
+    "django_smart_ratelimit",
+    "ninja_jwt",
+    "ninja_extra",
+    "django_celery_beat",
+]
 
 INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales"]
 
@@ -92,6 +97,10 @@ CACHES = {
     }
 }
 
+# DJANGO RATELIMIT
+# Django Smart Ratelimit Configuration (Robust Error Handling & Circuit Breaker)
+
+
 # CELERY
 CELERY_BROKER_URL = f"amqp://{env('RABBITMQ_DEFAULT_USER', default='guest')}:{env('RABBITMQ_DEFAULT_PASS', default='guest')}@rabbitmq:5672"
 CELERY_RESULT_BACKEND = env("REDIS_URL")
@@ -137,6 +146,22 @@ NINJA_JWT = {
     "TOKEN_OBTAIN_SLIDING_REFRESH_INPUT_SCHEMA": "ninja_jwt.schema.TokenRefreshSlidingInputSchema",
     "TOKEN_BLACKLIST_INPUT_SCHEMA": "ninja_jwt.schema.TokenBlacklistInputSchema",
     "TOKEN_VERIFY_INPUT_SCHEMA": "ninja_jwt.schema.TokenVerifyInputSchema",
+}
+
+
+# CHANNELS
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                {
+                    "address": env("REDIS_URL", default="redis://redis:6379"),
+                    "socket_timeout": None,  # volta ao comportamento antigo: espera indefinida
+                }
+            ],
+        },
+    },
 }
 
 # Password validation
