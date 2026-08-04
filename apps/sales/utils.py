@@ -4,6 +4,8 @@ from ..projects.secret.key import APIKeyEngine
 from ninja.errors import HttpError
 from ..projects.models import Project
 from django.shortcuts import get_object_or_404
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 class MonitoraAPIKey(AsyncAPIKeyHeader):
@@ -42,3 +44,34 @@ def to_json_safe(data):
 
     """Converte Decimal, datetime, UUID, etc. para tipos serializáveis por msgpack."""
     return json.loads(json.dumps(data, cls=DjangoJSONEncoder))
+
+
+def send_to_group_collaborators(sales: object) -> None:
+    """Sendo to collaborators group channels"""
+
+    view_key = sales[0].project.view_key
+    project_id = sales[0].project.id
+
+    data = {}
+
+    data["statistics"] = get_dashboard_sale(project_id)
+    data["recent_sales"] = [
+        {
+            "product_name": sale.product_name,
+            "product_price": sale.product_price,
+            "product_quantity": sale.product_quantity,
+            "description": sale.description,
+            "extra_data": sale.extra_data,
+            "sold_at": sale.sold_at,
+        }
+        for sale in sales
+    ]
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"chat_{view_key}",
+        {
+            "type": "sale.event",
+            "data": to_json_safe(data),
+        },
+    )
