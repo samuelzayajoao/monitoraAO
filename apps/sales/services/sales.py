@@ -2,6 +2,8 @@ from django.core.cache import cache
 from ninja.errors import HttpError
 import uuid
 import logging
+from apps.projects.models import Project
+from django.db.models import Q
 
 
 logger = logging.getLogger(__name__)
@@ -32,3 +34,17 @@ class SalesService:
             raise HttpError(500, "Não foi possivel processar a venda.")
 
         return 201, "Success"
+
+    async def get_sale(self, request, project_id):
+        project = (
+            await Project.objects.prefetch_related("sales_set", "project_collaborator")
+            .filter(
+                Q(project_collaborator__user=request.user) | Q(user=request.user),
+                id=project_id,
+            )
+            .afirst()
+        )
+        if not project:
+            raise HttpError(404, "Project not found")
+
+        return [sale async for sale in project.sales_set.order_by("-created_at").all()]

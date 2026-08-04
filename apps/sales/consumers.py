@@ -1,7 +1,6 @@
 # chat/consumers.py
 import json
 
-from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -20,7 +19,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             raise ValueError("Nao e um colaborador")
 
-        await sync_to_async(print)(collaborator.project.view_key)
         self.room_group_name = f"chat_{collaborator.project.view_key}"
 
         # Join room group
