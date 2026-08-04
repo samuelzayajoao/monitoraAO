@@ -13,14 +13,13 @@ class SalesController:
         self.sales_service = sales_service
 
     @route.post(
-        "",
         summary="Create a new sale",
         description="Creates a new sale entry",
-        response=str,
+        response={201: str},
         auth=MonitoraAPIKey(),
     )
     async def sale(self, request, salesIn: List[SalesIn]):
         """
         Create a new sale entry.
         """
-        return await self.sales_service.asale(request, salesIn)
+        return await self.sales_service.sale(request, salesIn)
