@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('sales', '0002_alter_sales_product_name'),
+        ("sales", "0002_alter_sales_product_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sales',
-            name='extra_data',
-            field=models.JSONField(blank=True, default=dict, null=True, verbose_name='Extra'),
+            model_name="sales",
+            name="extra_data",
+            field=models.JSONField(
+                blank=True, default=dict, null=True, verbose_name="Extra"
+            ),
         ),
     ]

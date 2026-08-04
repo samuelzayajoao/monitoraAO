@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import path, include
 from .api import api
 
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("health/", health, name="health-check"),
     path("api/v1/", api.urls),
+    path("chat/", include("apps.sales.urls")),
 ]
