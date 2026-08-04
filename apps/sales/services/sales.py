@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class SalesService:
-
     SALE_PREFIX_KEY = "sales:"
 
     async def sale(self, request, sales):
