@@ -12,7 +12,13 @@ class SalesController:
     def __init__(self, sales_service: SalesService):
         self.sales_service = sales_service
 
-    @route.post("", summary="Create a new sale", description="Creates a new sale entry", response=str, auth=MonitoraAPIKey())
+    @route.post(
+        "",
+        summary="Create a new sale",
+        description="Creates a new sale entry",
+        response=str,
+        auth=MonitoraAPIKey(),
+    )
     async def sale(self, request, salesIn: List[SalesIn]):
         """
         Create a new sale entry.

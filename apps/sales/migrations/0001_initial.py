@@ -5,30 +5,76 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('projects', '0014_collaborator_status'),
+        ("projects", "0014_collaborator_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Sales',
+            name="Sales",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('product_name', models.CharField(default=0, max_length=100, verbose_name='Nome do produto')),
-                ('product_price', models.DecimalField(decimal_places=2, max_digits=12, verbose_name='Preco do produto')),
-                ('product_quantity', models.PositiveIntegerField(default=1, verbose_name='Quantidade do produto')),
-                ('description', models.CharField(blank=True, max_length=300, null=True, verbose_name='Descricao')),
-                ('extra_data', models.JSONField(default=dict, verbose_name='Extra')),
-                ('sold_at', models.DateTimeField(blank=True, default=None, null=True, verbose_name='Data da venda')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Data de registo')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "product_name",
+                    models.CharField(
+                        default=0, max_length=100, verbose_name="Nome do produto"
+                    ),
+                ),
+                (
+                    "product_price",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=12, verbose_name="Preco do produto"
+                    ),
+                ),
+                (
+                    "product_quantity",
+                    models.PositiveIntegerField(
+                        default=1, verbose_name="Quantidade do produto"
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(
+                        blank=True, max_length=300, null=True, verbose_name="Descricao"
+                    ),
+                ),
+                ("extra_data", models.JSONField(default=dict, verbose_name="Extra")),
+                (
+                    "sold_at",
+                    models.DateTimeField(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        verbose_name="Data da venda",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Data de registo"
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.project",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Venda',
-                'verbose_name_plural': 'Vendas',
+                "verbose_name": "Venda",
+                "verbose_name_plural": "Vendas",
             },
         ),
     ]
