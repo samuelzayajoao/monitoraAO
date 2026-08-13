@@ -47,7 +47,7 @@ class UtilOTP:
             logger.error(f"OTP was not generated: {er}")
             raise er
 
-    async def save_otp(self):
+    async def save_otp(self, timeout=180):
         try:
             if await self.has_otp_key():
                 raise ValueError("Key AlreadyExists")
