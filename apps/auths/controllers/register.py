@@ -1,7 +1,7 @@
 from ninja_extra import api_controller, route
 from injector import inject
 from ..services import AuthServices
-from ..schemas import EmailIn, UserIn, UserOut
+from ..schemas import EmailIn, UserIn, UserOut, ChangePasswordIn
 from ninja_jwt.authentication import AsyncJWTAuth
 
 
@@ -41,3 +41,7 @@ class AuthController:
     @route.get("/profile", auth=AsyncJWTAuth(), response={200: UserOut})
     async def user_profile(self, request):
         return await self.auth_services.user_profile(request.user)
+
+    @route.post("/change-password", auth=AsyncJWTAuth())
+    async def change_password(self, request, password_schema: ChangePasswordIn):
+        return await self.auth_services.change_password(request.user, password_schema)

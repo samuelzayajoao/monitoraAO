@@ -1,3 +1,3 @@
-from .register import EmailIn, UserIn, UserOut
+from .register import EmailIn, UserIn, UserOut, ChangePasswordIn
 
-__all__ = ["EmailIn", "UserIn", "UserOut"]
+__all__ = ["EmailIn", "UserIn", "UserOut", "ChangePasswordIn"]

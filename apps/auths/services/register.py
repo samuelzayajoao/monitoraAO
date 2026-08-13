@@ -5,6 +5,9 @@ from ninja.responses import Response
 import secrets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from asgiref.sync import sync_to_async
+
+User = get_user_model()
 
 
 class AuthServices:
@@ -89,5 +92,21 @@ class AuthServices:
             else Response({"detail": "Registo efetuado."}, status=201)
         )
 
-    async def user_profile(self, user):
+    @sync_to_async
+    def user_profile(self, user):
         return user
+
+    @sync_to_async(thread_sensitive=True)
+    def change_password(self, user, password_in: object):
+        from ..utils import get_list_secret_value
+
+        old_password, new_password = get_list_secret_value(
+            password_in.old_password, password_in.new_password
+        )
+        if not user.check_password(old_password):
+            raise HttpError(401, "Senha não encontrada")
+
+        user.set_password(new_password)
+        user.save(update_fields=["password"])
+
+        return Response({"detail": "Senha alterada com sucesso"}, status=201)
