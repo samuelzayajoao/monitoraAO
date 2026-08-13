@@ -6,7 +6,6 @@ import secrets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from asgiref.sync import sync_to_async
-from django.core.cache import cache
 
 User = get_user_model()
 
@@ -39,7 +38,7 @@ class AuthServices:
             logger.error(f"Erro ao salvar o OTP, email: {email}")
             raise HttpError(500, "Nao foi Possivel gerar o codigo")
 
-        task_email_otp.delay(email)
+        task_email_otp.delay(email, "register_user", "Codigo de registo")
         return Response({"detail": "Codigo enviado para email."}, status=201)
 
     async def register_complete(self, request, user_in):
@@ -114,12 +113,21 @@ class PasswordServices:
 
         return Response({"detail": "Senha alterada com sucesso"}, status=201)
 
-    async def request_password_otp(request, email):
-        # STORE THE OTP IN REDIS
-        # SEND THE KEY TO CELERY
-        # SEND EMAIL
-        key: str = f"password_otp:{email}"
-        if await cache.ahas_key(key):
+    async def request_password_otp(self, request, email):
+        from ..tasks import task_email_otp
+
+        if not await User.objects.filter(email=email).aexists():
+            raise HttpError(404, "User with the given email not exists")
+
+        otp = UtilOTP(email, "recover_password")
+        if await otp.has_otp_key():
             raise HttpError(
                 409, "OTP já foi eviado, ou tente novamente em alguns minutos"
             )
+
+        await otp.save_otp()
+        task_email_otp.delay(
+            email, "recover_password", "Codigo de recuperação de senha"
+        )
+
+        return Response({"detail": "Check you email box"}, status=202)
