@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def task_email_otp(email: str):
     from utils.otp import UtilOTP
 
-    object_otp = UtilOTP(email)
+    object_otp = UtilOTP(email, "register_user")
     if not async_to_sync(object_otp.has_otp_key)():
         raise ValueError("Chave expirou")
     otp = async_to_sync(object_otp.get_otp)()

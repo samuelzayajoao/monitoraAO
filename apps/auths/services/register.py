@@ -6,6 +6,7 @@ import secrets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from asgiref.sync import sync_to_async
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -24,7 +25,7 @@ class AuthServices:
         """
 
         try:
-            otp = UtilOTP(email)
+            otp = UtilOTP(email=email, prefix="register_user")
 
             has_otp_key = await otp.has_otp_key()
             if has_otp_key:
@@ -68,7 +69,7 @@ class AuthServices:
         ):
             raise HttpError(400, "Senhas diferentes")
 
-        object_otp = UtilOTP(email)
+        object_otp = UtilOTP(email, "register_user")
         if not await object_otp.has_otp_key():
             raise HttpError(404, "OTP expirou ou não existe")
         existent_otp = await object_otp.get_otp()
@@ -96,6 +97,8 @@ class AuthServices:
     def user_profile(self, user):
         return user
 
+
+class PasswordServices:
     @sync_to_async(thread_sensitive=True)
     def change_password(self, user, password_in: object):
         from ..utils import get_list_secret_value
@@ -110,3 +113,13 @@ class AuthServices:
         user.save(update_fields=["password"])
 
         return Response({"detail": "Senha alterada com sucesso"}, status=201)
+
+    async def request_password_otp(request, email):
+        # STORE THE OTP IN REDIS
+        # SEND THE KEY TO CELERY
+        # SEND EMAIL
+        key: str = f"password_otp:{email}"
+        if await cache.ahas_key(key):
+            raise HttpError(
+                409, "OTP já foi eviado, ou tente novamente em alguns minutos"
+            )

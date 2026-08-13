@@ -1,3 +1,3 @@
-from .register import AuthServices
+from .register import AuthServices, PasswordServices
 
-__all__ = ["AuthServices"]
+__all__ = ["AuthServices", "PasswordServices"]

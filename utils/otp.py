@@ -1,6 +1,6 @@
 import secrets
 from asgiref.sync import sync_to_async
-from .prefix_key import REGISTER_OTP_PREFIX
+from .prefix_key import REGISTER_OTP_PREFIX, RECOVER_PASSWORD_OTP_PREFIX
 from django.core.cache import cache
 import logging
 
@@ -8,15 +8,26 @@ logger = logging.getLogger(__name__)
 
 
 class UtilOTP:
-    def __init__(self, email: str | None) -> None:
-        self.set_key = email
+    prefix_dict = {
+        "register_user": REGISTER_OTP_PREFIX,
+        "recover_password": RECOVER_PASSWORD_OTP_PREFIX,
+    }
+
+    def __init__(self, email: str | None = None, prefix: str | None = None) -> None:
+        self.set_key(email, prefix)
 
     @property
     def get_key(self) -> str:
         return self._key
 
-    @get_key.setter
-    def set_key(self, email) -> None:
+    def set_key(self, email, prefix) -> None:
+
+        prefix = self.prefix_dict.get(prefix)
+        if prefix is None:
+            raise ValueError(
+                f"Prefix does not exists, options are {self.prefix_dict.keys()}"
+            )
+
         if not email:
             raise ValueError("Email not informed")
         if not isinstance(email, str):
@@ -25,7 +36,7 @@ class UtilOTP:
             raise ValueError("Invalid Email")
 
         email = email.strip()
-        self._key = REGISTER_OTP_PREFIX + email
+        self._key = prefix + email
 
     @staticmethod
     async def agenerate_otp() -> str:

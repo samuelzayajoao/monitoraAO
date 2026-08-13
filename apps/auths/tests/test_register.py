@@ -17,7 +17,7 @@ class TestRegister:
             "password": "Zaya12Angola",
             "confirm_password": "Zaya12Angola",
         }
-        self.object_otp = UtilOTP(self.data["email"])
+        self.object_otp = UtilOTP(self.data["email"], "register_user")
 
         async def setup_otp():
             await self.object_otp.clean_otp_key()
