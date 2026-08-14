@@ -5,10 +5,14 @@ from ..schemas import CollaboratorInviteSchema, CollaboratorOut
 from typing import List
 from ninja_jwt.authentication import AsyncJWTAuth
 from uuid import UUID
+from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    prefix_or_class="/collaborator", tags=["Collaborators"], auth=AsyncJWTAuth()
+    prefix_or_class="/collaborator", 
+    tags=["Collaborators"], 
+    auth=AsyncJWTAuth(),
+    throttle=DynamicRateThrottleAdvacend(rate="100/m", scope="collaborator")
 )
 class CollaboratorController:
     @inject
