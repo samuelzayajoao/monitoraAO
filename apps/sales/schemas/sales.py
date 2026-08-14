@@ -16,3 +16,9 @@ class SalesIn(ModelSchema):
         if value != "0":
             raise ValueError("project must be '0'")
         return value
+
+
+class SalesOut(ModelSchema):
+    class Meta:
+        model = Sales
+        exclude = ["project"]

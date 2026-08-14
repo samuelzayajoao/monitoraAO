@@ -5,7 +5,7 @@ from apps.projects.controllers import (
     IntegrationController,
     CollaboratorController,
 )
-from apps.sales.routes import SalesController
+from apps.sales.routes import sales_router
 
 api = NinjaExtraAPI(
     title="MonitoraAO",
@@ -21,4 +21,4 @@ api.register_controllers(
     *(ProjectController, IntegrationController, CollaboratorController)
 )
 
-api.register_controllers(*(SalesController,))
+api.add_router(prefix="/sales", router=sales_router)

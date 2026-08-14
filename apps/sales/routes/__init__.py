@@ -1,3 +1,3 @@
-from .sales import SalesController
+from .sales import router as sales_router
 
-__all__ = ["SalesController"]
+__all__ = ["sales_router"]

@@ -1,3 +1,3 @@
-from .sales import SalesIn
+from .sales import SalesIn, SalesOut
 
-__all__ = ["SalesIn"]
+__all__ = ["SalesIn", "SalesOut"]

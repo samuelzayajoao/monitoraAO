@@ -1,26 +1,39 @@
-from ninja_extra import api_controller, route
-from ..schemas import SalesIn
-from typing import List
-from injector import inject
-from ..services import SalesService
+from ninja_extra import Router
+from ninja.pagination import paginate
+from ninja_jwt.authentication import AsyncJWTAuth
+from django_smart_ratelimit import aratelimit
+from ..schemas import SalesIn, SalesOut
 from ..utils import MonitoraAPIKey
+from ..services import SalesService
+from typing import List
+import uuid
 
 
-@api_controller(prefix_or_class="/sales", tags=["Sales"])
-class SalesController:
-    @inject
-    def __init__(self, sales_service: SalesService):
-        self.sales_service = sales_service
+router = Router(tags=["Sales"])
 
-    @route.post(
-        "",
-        summary="Create a new sale",
-        description="Creates a new sale entry",
-        response=str,
-        auth=MonitoraAPIKey(),
-    )
-    async def sale(self, request, salesIn: List[SalesIn]):
-        """
-        Create a new sale entry.
-        """
-        return await self.sales_service.asale(request, salesIn)
+
+@router.post(
+    path="",
+    summary="Create a new sale",
+    description="Creates a new sale entry",
+    response={201: str},
+    auth=MonitoraAPIKey(),
+)
+@aratelimit(key="ip", rate="100/m", method="POST", block=True, algorithm="token_backet")
+async def sale(request, salesIn: List[SalesIn]):
+    """
+    Create a new sale entry.
+    """
+    return await SalesService().sale(request, salesIn)
+
+
+@router.get(
+    path="/{project_id}",
+    response=List[SalesOut],
+    auth=[AsyncJWTAuth()],
+)
+@aratelimit(key="user", rate="30/m", method="GET", block=True, algorithm="token_backet")
+@paginate
+async def get_sales(request, project_id: uuid.UUID):
+    """List all sales for a specific project."""
+    return await SalesService().get_sale(request, project_id)
