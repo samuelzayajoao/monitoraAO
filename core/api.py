@@ -5,7 +5,7 @@ from apps.projects.controllers import (
     IntegrationController,
     CollaboratorController,
 )
-from apps.sales.controllers import SalesController
+from apps.sales.routes import SalesController
 
 api = NinjaExtraAPI(
     title="MonitoraAO",
