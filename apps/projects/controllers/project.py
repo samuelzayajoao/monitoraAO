@@ -6,9 +6,15 @@ from ..services import ProjectServices
 from ..schemas import ProjectIn, ProjectOut, ProjectUpdate
 from typing import List
 from uuid import UUID
+from utils import DynamicRateThrottleAdvacend
 
 
-@api_controller("/project", tags=["Projects"], auth=AsyncJWTAuth())
+@api_controller(
+    "/project", 
+    tags=["Projects"], 
+    auth=AsyncJWTAuth(), 
+    throttle=[DynamicRateThrottleAdvacend(rate="100/m", scope="project_global")]
+)
 class ProjectController:
     @inject
     def __init__(self, project_services: ProjectServices):
@@ -32,6 +38,9 @@ class ProjectController:
     async def delete_project(self, request, project_id: UUID):
         return await self.project_services.delete_project(request.user, project_id)
 
-    @route.get("/", response={200: List[ProjectOut]})
+    @route.get("/", 
+        response={200: List[ProjectOut]},
+        throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="list_projects")]
+    )
     async def list_projects(self, request):
         return await self.project_services.list_projects(request.user)
