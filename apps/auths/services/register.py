@@ -1,4 +1,4 @@
-from utils.otp import UtilOTP, logger
+from utils.otp import UtilOTP
 from ninja.errors import HttpError
 from ..tasks import task_email_otp
 from ninja.responses import Response
@@ -6,6 +6,10 @@ import secrets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from asgiref.sync import sync_to_async
+from django.shortcuts import get_object_or_404
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -131,3 +135,31 @@ class PasswordServices:
         )
 
         return Response({"detail": "Check you email box"}, status=202)
+
+    async def recover_password(self, request, rpi):
+
+        try:
+            otp = rpi.otp
+            email = rpi.email
+            password = rpi.password.get_secret_value()
+
+            otp_object = UtilOTP(email=email, prefix="recover_password")
+            otp_stored = await otp_object.get_otp()
+
+            if otp_stored != str(otp):
+                raise HttpError(404, "OTP nao existe ou expirou, paça um novo")
+
+            user = await sync_to_async(get_object_or_404)(User, email=email)
+            await sync_to_async(user.set_password)(password)
+            await user.asave(update_fields=["password"])
+
+            await otp_object.clean_otp_key()
+
+        except HttpError as he:
+            raise he
+
+        except Exception as e:
+            logger.error(f"Erro ao alter a senha do email: {email}, TIPO: {e}")
+            raise HttpError(500, "Nao foi possivel alter a senha, tente novamente mais")
+
+        return Response({"detail": "Senha alterada com sucesso"}, status=201)

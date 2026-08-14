@@ -4,13 +4,10 @@ from pydantic import (
     EmailStr,
     field_validator,
     SecretStr,
-    model_validator,
 )
 from typing import Optional
 from ninja import ModelSchema
 from django.contrib.auth import get_user_model
-from secrets import compare_digest
-from ..utils import get_list_secret_value
 
 
 User = get_user_model()
@@ -59,29 +56,3 @@ class UserOut(ModelSchema):
     class Meta:
         model = User
         fields = ["email", "first_name", "last_name"]
-
-
-class ChangePasswordIn(BaseModel):
-    old_password: SecretStr = Field(
-        description="Old password for user authentication", min_length=5, max_length=50
-    )
-    new_password: SecretStr = Field(
-        description="New password for user authentication", min_length=5, max_length=50
-    )
-    confirm_new_password: SecretStr = Field(
-        description="Confirm new password for user authentication",
-        min_length=5,
-        max_length=50,
-    )
-
-    @model_validator(mode="after")
-    def compare_password(self):
-        confirm_new_password, new_password, old_password = get_list_secret_value(
-            self.new_password, self.confirm_new_password, self.old_password
-        )
-
-        if compare_digest(old_password, new_password):
-            raise ValueError("Nova senha corresponde a senha antiga")
-        if not compare_digest(confirm_new_password, new_password):
-            raise ValueError("Senha diferentes")
-        return self

@@ -1,7 +1,7 @@
 from ninja_extra import api_controller, route
 from injector import inject
 from ..services import AuthServices, PasswordServices
-from ..schemas import EmailIn, UserIn, UserOut, ChangePasswordIn
+from ..schemas import EmailIn, UserIn, UserOut, ChangePasswordIn, RecoverPasswordIn
 from ninja_jwt.authentication import AsyncJWTAuth
 
 
@@ -54,3 +54,7 @@ class AuthController:
     @route.post("/password/otp")
     async def request_password_otp(self, request, email: EmailIn):
         return await self.password_services.request_password_otp(request, email.email)
+
+    @route.post("/password/recover", response=str)
+    async def recover_password(self, request, rpi: RecoverPasswordIn):
+        return await self.password_services.recover_password(request, rpi)

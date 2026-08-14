@@ -14,13 +14,13 @@ class UtilOTP:
     }
 
     def __init__(self, email: str | None = None, prefix: str | None = None) -> None:
-        self.set_key(email, prefix)
+        self._set_key(email, prefix)
 
     @property
     def get_key(self) -> str:
         return self._key
 
-    def set_key(self, email, prefix) -> None:
+    def _set_key(self, email, prefix) -> None:
 
         prefix = self.prefix_dict.get(prefix)
         if prefix is None:
