@@ -6,7 +6,8 @@ class TestOTP:
     def setup_method(self):
 
         self.email = "emailtest@z.ao"
-        self.otp = UtilOTP(self.email)
+        self.prefix = "register_user"
+        self.otp = UtilOTP(self.email, self.prefix)
 
     @pytest.mark.asyncio
     async def test_otp(self):
@@ -27,9 +28,8 @@ class TestOTP:
     @pytest.mark.asyncio
     async def test_otp_key_exceptions(self):
         with pytest.raises(ValueError):
-            self.otp.set_key = ""
+            self.otp.set_key(None, None)
+
         with pytest.raises(ValueError):
-            self.otp.set_key = None
-        with pytest.raises(ValueError):
-            self.otp.set_key = "samul"
+            self.otp.set_key("samul", 1)
         await self.otp.clean_otp_key()
