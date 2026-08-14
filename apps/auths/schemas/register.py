@@ -1,4 +1,10 @@
-from pydantic import Field, BaseModel, EmailStr, field_validator, SecretStr
+from pydantic import (
+    Field,
+    BaseModel,
+    EmailStr,
+    field_validator,
+    SecretStr,
+)
 from typing import Optional
 from ninja import ModelSchema
 from django.contrib.auth import get_user_model

@@ -12,16 +12,16 @@ logger = logging.getLogger(__name__)
     default_retry_delay=10,
     ignore_result=True,
 )
-def task_email_otp(email: str):
+def task_email_otp(email: str, prefix: str, subject: str):
     from utils.otp import UtilOTP
 
-    object_otp = UtilOTP(email)
+    object_otp = UtilOTP(email, prefix)
     if not async_to_sync(object_otp.has_otp_key)():
         raise ValueError("Chave expirou")
     otp = async_to_sync(object_otp.get_otp)()
 
     send_mail(
-        subject="Welcome to Our Website!",
+        subject=subject,
         message=f"OTP: {otp}",
         from_email="from@example.com",
         recipient_list=[email],

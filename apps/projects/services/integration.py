@@ -91,17 +91,16 @@ class IntegrationService:
             )
             raise HttpError(500, "Nao foi possivel obter os detalhes da API Key")
 
-        from ..schemas import ProjectAPIKeyDetailsOut
 
-        api_key_schema = ProjectAPIKeyDetailsOut(
-            id=project_api_key["id"],
-            project=project_api_key["project__name"],
-            api_key=project_api_key["api_key"],
-            is_active=project_api_key["is_active"],
-            expired_at=project_api_key["expired_at"],
-        )
+        project_api_key_out = {
+            "id": project_api_key["id"],
+            "project": project_api_key["project__name"],
+            "api_key": project_api_key["api_key"],
+            "is_active": project_api_key["is_active"],
+            "expired_at": project_api_key["expired_at"],
+        }
 
-        return api_key_schema
+        return project_api_key_out
 
     async def delete_api_key(self, request, project_id):
         try:
