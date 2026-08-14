@@ -148,6 +148,18 @@ NINJA_JWT = {
     "TOKEN_VERIFY_INPUT_SCHEMA": "ninja_jwt.schema.TokenVerifyInputSchema",
 }
 
+# NINJA EXTRA
+NINJA_EXTRA = {
+    'THROTTLE_CLASSES': [
+        "ninja_extra.throttling.AnonRateThrottle",
+        "ninja_extra.throttling.UserRateThrottle",
+        "ninja_extra.throttling.DynamicRateThrottle",
+    ],
+    'THROTTLE_RATES': {
+        'anon': '1000/day',
+    },
+    'NUM_PROXIES': None, # Set an integer if running behind reverse proxies (Nginx, Cloudflare)
+}
 
 # CHANNELS
 CHANNEL_LAYERS = {
