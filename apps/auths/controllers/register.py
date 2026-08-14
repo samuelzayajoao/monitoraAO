@@ -23,22 +23,12 @@ class AuthController:
         description="Register email user and send OTP to email",
     )
     async def register_email(self, request, email: EmailIn):
-        """
-        Args:
-            request (_type_): _description_
-            email (EmailIn): _description_
-        """
         return await self.auth_services.register_email(request, email.email)
 
     @route.post(
         "/register", summary="Validate OTP", description="Validate OTP for email user"
     )
     async def register_complete(self, request, user_in: UserIn):
-        """
-        Args:
-            request (_type_): _description_
-            user_in (UserIn): _description_
-        """
         return await self.auth_services.register_complete(request, user_in)
 
     @route.get("/profile", auth=AsyncJWTAuth(), response={200: UserOut})
