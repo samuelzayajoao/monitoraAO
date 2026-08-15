@@ -33,7 +33,7 @@ class SalesService:
             logger.error(f"Erro ao processar a venda: {e}")
             raise HttpError(500, "Não foi possivel processar a venda.")
 
-        return 201, "Success"
+        return 202, "Success"
 
     async def get_sale(self, request, project_id):
         project = (

@@ -60,6 +60,8 @@ def send_to_group_collaborators(sales: object) -> None:
             "product_name": sale.product_name,
             "product_price": sale.product_price,
             "product_quantity": sale.product_quantity,
+            "category": sale.category,
+            "external_ref": sale.external_ref,
             "description": sale.description,
             "extra_data": sale.extra_data,
             "sold_at": sale.sold_at,

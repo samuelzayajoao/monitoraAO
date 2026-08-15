@@ -16,7 +16,7 @@ router = Router(tags=["Sales"])
     path="",
     summary="Create a new sale",
     description="Creates a new sale entry",
-    response={201: str},
+    response={202: str},
     auth=MonitoraAPIKey(),
 )
 @aratelimit(key="ip", rate="100/m", method="POST", block=True, algorithm="token_backet")
