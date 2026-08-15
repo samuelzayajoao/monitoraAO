@@ -38,6 +38,12 @@ class SalesIn(ModelSchema):
 
 
 class SalesOut(ModelSchema):
+    total: float
+
     class Meta:
         model = Sales
         exclude = ["project"]
+
+    @staticmethod
+    def resolve_total(obj):
+        return float(obj.product_price * obj.product_quantity)
