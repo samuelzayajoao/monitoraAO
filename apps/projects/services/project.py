@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from ..models import Project
 from asgiref.sync import sync_to_async
 from ninja.errors import HttpError
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -19,7 +20,9 @@ class ProjectServices:
     async def get_project(self, user, project_id):
         try:
             project = await Project.objects.aget(
-                user=user, id=project_id, is_active=True
+                Q(user=user) | Q(project_collaborator__user=user),
+                id=project_id,
+                is_active=True,
             )
         except Project.DoesNotExist:
             raise HttpError(404, "Project not found")
@@ -49,6 +52,11 @@ class ProjectServices:
         return project
 
     async def list_projects(self, user):
-        return await sync_to_async(list)(
-            Project.objects.filter(user=user, is_active=True).order_by("-created_at")
+        projects = await sync_to_async(list)(
+            Project.objects.filter(
+                Q(project_collaborator__user=user) | Q(user=user), is_active=True
+            )
+            .distinct()
+            .order_by("-created_at")
         )
+        return projects

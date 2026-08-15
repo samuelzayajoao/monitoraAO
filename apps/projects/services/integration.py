@@ -91,7 +91,6 @@ class IntegrationService:
             )
             raise HttpError(500, "Nao foi possivel obter os detalhes da API Key")
 
-
         project_api_key_out = {
             "id": project_api_key["id"],
             "project": project_api_key["project__name"],
