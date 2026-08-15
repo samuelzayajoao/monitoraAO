@@ -150,15 +150,15 @@ NINJA_JWT = {
 
 # NINJA EXTRA
 NINJA_EXTRA = {
-    'THROTTLE_CLASSES': [
+    "THROTTLE_CLASSES": [
         "ninja_extra.throttling.AnonRateThrottle",
         "ninja_extra.throttling.UserRateThrottle",
         "ninja_extra.throttling.DynamicRateThrottle",
     ],
-    'THROTTLE_RATES': {
-        'anon': '1000/day',
+    "THROTTLE_RATES": {
+        "anon": "1000/day",
     },
-    'NUM_PROXIES': None, # Set an integer if running behind reverse proxies (Nginx, Cloudflare)
+    "NUM_PROXIES": None,  # Set an integer if running behind reverse proxies (Nginx, Cloudflare)
 }
 
 # CHANNELS

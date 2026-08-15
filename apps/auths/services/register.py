@@ -95,7 +95,6 @@ class AuthServices:
             detail, status = "Usuario ja existente, faça login.", 401
 
         return Response({"detail": detail}, status=status)
-        
 
     @sync_to_async
     def user_profile(self, user):

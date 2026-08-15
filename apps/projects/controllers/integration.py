@@ -8,10 +8,10 @@ from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    "/integration", 
-    tags=["Integration"], 
+    "/integration",
+    tags=["Integration"],
     auth=AsyncJWTAuth(),
-    throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="integration")]
+    throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="integration")],
 )
 class IntegrationController:
     @inject

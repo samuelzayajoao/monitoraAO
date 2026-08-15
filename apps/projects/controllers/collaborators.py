@@ -9,10 +9,10 @@ from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    prefix_or_class="/collaborator", 
-    tags=["Collaborators"], 
+    prefix_or_class="/collaborator",
+    tags=["Collaborators"],
     auth=AsyncJWTAuth(),
-    throttle=DynamicRateThrottleAdvacend(rate="100/m", scope="collaborator")
+    throttle=DynamicRateThrottleAdvacend(rate="100/m", scope="collaborator"),
 )
 class CollaboratorController:
     @inject

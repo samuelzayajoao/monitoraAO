@@ -20,7 +20,9 @@ class ProjectServices:
     async def get_project(self, user, project_id):
         try:
             project = await Project.objects.aget(
-                Q(user=user) | Q(project_collaborator__user=user), id=project_id, is_active=True
+                Q(user=user) | Q(project_collaborator__user=user),
+                id=project_id,
+                is_active=True,
             )
         except Project.DoesNotExist:
             raise HttpError(404, "Project not found")
@@ -51,8 +53,9 @@ class ProjectServices:
 
     async def list_projects(self, user):
         projects = await sync_to_async(list)(
-            Project.objects
-            .filter(Q(project_collaborator__user=user) | Q(user=user), is_active=True)
+            Project.objects.filter(
+                Q(project_collaborator__user=user) | Q(user=user), is_active=True
+            )
             .distinct()
             .order_by("-created_at")
         )

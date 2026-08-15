@@ -10,10 +10,10 @@ from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    "/project", 
-    tags=["Projects"], 
-    auth=AsyncJWTAuth(), 
-    throttle=[DynamicRateThrottleAdvacend(rate="100/m", scope="project_global")]
+    "/project",
+    tags=["Projects"],
+    auth=AsyncJWTAuth(),
+    throttle=[DynamicRateThrottleAdvacend(rate="100/m", scope="project_global")],
 )
 class ProjectController:
     @inject
@@ -42,9 +42,10 @@ class ProjectController:
         """Delete a project by ID"""
         return await self.project_services.delete_project(request.user, project_id)
 
-    @route.get("/", 
+    @route.get(
+        "/",
         response={200: List[ProjectOut]},
-        throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="list_projects")]
+        throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="list_projects")],
     )
     async def list_projects(self, request):
         """List all projects Owner or Collaborated"""
