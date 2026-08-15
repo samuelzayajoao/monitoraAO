@@ -4,7 +4,8 @@ from ninja_jwt.authentication import AsyncJWTAuth
 
 from ..services import ProjectServices
 from ..schemas import ProjectIn, ProjectOut, ProjectUpdate
-from typing import List
+from ..schemas.dashboard import DashboardResponseSchema
+from typing import List, Optional
 from uuid import UUID
 from utils import DynamicRateThrottleAdvacend
 
@@ -50,3 +51,17 @@ class ProjectController:
     async def list_projects(self, request):
         """List all projects Owner or Collaborated"""
         return await self.project_services.list_projects(request.user)
+
+    @route.get("/{uuid:project_id}/dashboard", response={200: DashboardResponseSchema})
+    async def get_dashboard(
+        self,
+        request,
+        project_id: UUID,
+        period: Optional[str] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+    ):
+        """Get the dashboard metrics for a project"""
+        return await self.project_services.get_dashboard(
+            request.user, project_id, period, start_date, end_date
+        )
