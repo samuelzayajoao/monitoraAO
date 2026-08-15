@@ -4,9 +4,15 @@ from ..services import IntegrationService
 import uuid
 from injector import inject
 from ..schemas import ProjectAPIKeyOut, ProjectAPIKeyDetailsOut
+from utils import DynamicRateThrottleAdvacend
 
 
-@api_controller("/integration", tags=["Integration"], auth=AsyncJWTAuth())
+@api_controller(
+    "/integration", 
+    tags=["Integration"], 
+    auth=AsyncJWTAuth(),
+    throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="integration")]
+)
 class IntegrationController:
     @inject
     def __init__(self, integration_service: IntegrationService):
