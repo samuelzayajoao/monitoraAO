@@ -9,7 +9,7 @@ from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    prefix_or_class="/collaborator",
+    prefix_or_class="/members",
     tags=["Collaborators"],
     auth=AsyncJWTAuth(),
     throttle=DynamicRateThrottleAdvacend(rate="100/m", scope="collaborator"),
@@ -37,11 +37,11 @@ class CollaboratorController:
         description="List collaborator invitations",
         response=List[CollaboratorOut],
     )
-    async def list_my_invitation(self, request):
+    async def list_invites(self, request):
         """
         Collaborator lists invitations
         """
-        return await self.collaborator_service.list_my_invitation(request.user)
+        return await self.collaborator_service.list_invites(request.user)
 
     @route.delete(
         path="/invite/{invitation_id}",

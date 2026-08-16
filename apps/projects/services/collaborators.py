@@ -79,9 +79,9 @@ class CollaboratorService:
     async def update_invation(self):
         pass
 
-    async def list_my_invitation(self, user):
+    async def list_invites(self, user):
         invitations = await sync_to_async(get_list_or_404)(
-            Collaborator, user=user, status=False
+            Collaborator, user=user
         )
         return invitations
 
