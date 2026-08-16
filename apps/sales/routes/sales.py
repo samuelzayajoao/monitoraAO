@@ -7,6 +7,7 @@ from ..utils import MonitoraAPIKey
 from ..services import SalesService
 from typing import List, Optional
 import uuid
+from datetime import datetime
 
 
 router = Router(tags=["Sales"])
@@ -27,8 +28,6 @@ async def sale(request, salesIn: List[SalesIn]):
     return await SalesService().sale(request, salesIn)
 
 
-from datetime import datetime
-
 @router.get(
     path="/{project_id}",
     response=List[SalesOut],
@@ -37,10 +36,10 @@ from datetime import datetime
 @aratelimit(key="user", rate="30/m", method="GET", block=True, algorithm="token_backet")
 @paginate(PageNumberPagination)
 async def get_sales(
-    request, 
+    request,
     project_id: uuid.UUID,
     start_date: Optional[datetime] = None,
-    end_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None,
 ):
     """List all sales for a specific project."""
     return await SalesService().get_sale(request, project_id, start_date, end_date)

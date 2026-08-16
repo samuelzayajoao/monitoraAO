@@ -1,10 +1,11 @@
 from ninja_extra import api_controller, route
 from injector import inject
 from ninja_jwt.authentication import AsyncJWTAuth
+from ninja import Query
 
 from ..services import ProjectServices
 from ..schemas import ProjectIn, ProjectOut, ProjectUpdate
-from ..schemas.dashboard import DashboardResponseSchema
+from ..schemas.dashboard import DashboardResponseSchema, DashboardFilterSchema
 from typing import List, Optional
 from uuid import UUID
 from utils import DynamicRateThrottleAdvacend
@@ -57,11 +58,11 @@ class ProjectController:
         self,
         request,
         project_id: UUID,
-        period: Optional[str] = None,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        filters: DashboardFilterSchema = Query(...),
     ):
         """Get the dashboard metrics for a project"""
+        start_date_str = filters.start_date.isoformat() if filters.start_date else None
+        end_date_str = filters.end_date.isoformat() if filters.end_date else None
         return await self.project_services.get_dashboard(
-            request.user, project_id, period, start_date, end_date
+            request.user, project_id, filters.period, start_date_str, end_date_str
         )
