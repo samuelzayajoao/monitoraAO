@@ -29,7 +29,7 @@ INSTALLED_EXTERNAL_APPS = [
     "django_celery_beat",
 ]
 
-INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales"]
+INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales", "apps.notifs"]
 
 INSTALLED_APPS = (
     [
