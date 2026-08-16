@@ -4,9 +4,32 @@ from apps.projects.models import Project
 
 
 class Sales(models.Model):
+    class CategoryChoices(models.TextChoices):
+        FISICO = "produto_fisico", _("Produto Físico")
+        DIGITAL = "produto_digital", _("Produto Digital")
+        ASSINATURA = "assinatura", _("Assinatura")
+        SERVICO = "servico", _("Serviço")
+        CONSULTORIA = "consultoria", _("Consultoria")
+        LICENCA = "licenca", _("Licença")
+        COMISSAO = "comissao", _("Comissão")
+        OUTRO = "outro", _("Outro")
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     product_name = models.CharField(
         _("Nome do produto"), max_length=100, null=False, blank=False
+    )
+    category = models.CharField(
+        _("Categoria"),
+        max_length=50,
+        choices=CategoryChoices.choices,
+        default=CategoryChoices.OUTRO,
+    )
+    external_ref = models.CharField(
+        _("Referência Externa"),
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text=_("ID da venda do sistema de origem ex 12867"),
     )
     product_price = models.DecimalField(
         _("Preco do produto"), decimal_places=2, max_digits=12

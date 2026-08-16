@@ -29,7 +29,7 @@ INSTALLED_EXTERNAL_APPS = [
     "django_celery_beat",
 ]
 
-INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales"]
+INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales", "apps.notifs"]
 
 INSTALLED_APPS = (
     [
@@ -115,7 +115,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # NINJA JWT
 NINJA_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -148,6 +148,18 @@ NINJA_JWT = {
     "TOKEN_VERIFY_INPUT_SCHEMA": "ninja_jwt.schema.TokenVerifyInputSchema",
 }
 
+# NINJA EXTRA
+NINJA_EXTRA = {
+    "THROTTLE_CLASSES": [
+        "ninja_extra.throttling.AnonRateThrottle",
+        "ninja_extra.throttling.UserRateThrottle",
+        "ninja_extra.throttling.DynamicRateThrottle",
+    ],
+    "THROTTLE_RATES": {
+        "anon": "1000/day",
+    },
+    "NUM_PROXIES": None,  # Set an integer if running behind reverse proxies (Nginx, Cloudflare)
+}
 
 # CHANNELS
 CHANNEL_LAYERS = {

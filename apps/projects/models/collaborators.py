@@ -11,7 +11,11 @@ class Collaborator(models.Model):
     class RoleChoices(models.TextChoices):
         ADMIN = "ADMIN", "administrator"  # MANAGE - CRUD
         SECONDARY = "SECONDARY", "secondary"  # MANAGE - RU
-        READER = "READER", "reader"  # MANAGE - R
+
+    class StatusChoices(models.TextChoices):
+        PENDING = "PENDING", "pending"
+        ACCEPTED = "ACCEPTED", "accepted"
+        REJECTED = "REJECTED", "rejected"
 
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="project_collaborator"
@@ -22,13 +26,15 @@ class Collaborator(models.Model):
     role = models.CharField(
         _("Collaborator"), choices=RoleChoices.choices, default=RoleChoices.SECONDARY
     )
-    status = models.BooleanField(_("Accepted"), default=False)
+    status = models.CharField(
+        _("Status"), choices=StatusChoices.choices, default=StatusChoices.PENDING
+    )
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
     def __str__(self):
-        return f"{self.project.name} - {self.user.get_full_name()}"
+        return f"{self.project.name} - {self.user.get_full_name()} - {self.status}"
 
     def save(self, *args, **kwargs):
         self._validate_project_user_and_collaborator_not_same()

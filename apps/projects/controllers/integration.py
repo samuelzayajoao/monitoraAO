@@ -4,9 +4,15 @@ from ..services import IntegrationService
 import uuid
 from injector import inject
 from ..schemas import ProjectAPIKeyOut, ProjectAPIKeyDetailsOut
+from utils import DynamicRateThrottleAdvacend
 
 
-@api_controller("/integration", tags=["Integration"], auth=AsyncJWTAuth())
+@api_controller(
+    "/integration",
+    tags=["Integration"],
+    auth=AsyncJWTAuth(),
+    throttle=[DynamicRateThrottleAdvacend(rate="50/m", scope="integration")],
+)
 class IntegrationController:
     @inject
     def __init__(self, integration_service: IntegrationService):
@@ -14,16 +20,20 @@ class IntegrationController:
 
     @route.post("/generate-api-key/{project_id}", response={201: ProjectAPIKeyOut})
     async def generate_api_key(self, request, project_id: uuid.UUID):
+        """Generate a new API key for a project"""
         return await self.integration_service.generate_api_key(request, project_id)
 
     @route.post("/revoke-api-key/{project_id}")
     async def revoke_api_key(self, request, project_id: uuid.UUID):
+        """Revoke an existing API key for a project"""
         return await self.integration_service.revoke_api_key(request, project_id)
 
     @route.get("/api-key/{project_id}", response=ProjectAPIKeyDetailsOut)
     async def api_key_status(self, request, project_id: uuid.UUID):
+        """Get the status of an API key for a project"""
         return await self.integration_service.api_key_detail(request, project_id)
 
     @route.delete("/delete-api-key/{project_id}")
     async def delete_api_key(self, request, project_id: uuid.UUID):
+        """Delete an API key for a project"""
         return await self.integration_service.delete_api_key(request, project_id)

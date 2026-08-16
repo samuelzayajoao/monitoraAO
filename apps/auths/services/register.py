@@ -90,11 +90,11 @@ class AuthServices:
             email=email,
         )
 
-        return (
-            Response({"detail": "Usuario ja existente, faça login."}, status=401)
-            if not created
-            else Response({"detail": "Registo efetuado."}, status=201)
-        )
+        detail, status = "Registo efetuado.", 201
+        if not created:
+            detail, status = "Usuario ja existente, faça login.", 401
+
+        return Response({"detail": detail}, status=status)
 
     @sync_to_async
     def user_profile(self, user):
