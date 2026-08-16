@@ -76,9 +76,6 @@ class CollaboratorService:
 
         return Response("Convite foi criando e enviado.", status=201)
 
-    async def update_invation(self):
-        pass
-
     async def list_invites(self, user):
         invitations = await sync_to_async(get_list_or_404)(Collaborator, user=user)
         return invitations

@@ -59,20 +59,6 @@ class CollaboratorController:
             request.auth, option, invitation_id
         )
 
-    @route.delete(
-        path="/me/invite/{invitation_id}/reject",
-        summary="Collaborator rejects invitation by id",
-        description="Collaborator rejects invitation by id",
-        response=str,
-    )
-    async def reject_my_invitation(self, request, invitation_id: int):
-        """
-        Collaborator rejects invitation by id
-        """
-        return await self.collaborator_service.reject_my_invitation(
-            request.user, invitation_id
-        )
-
     @route.get(
         path="/{project_id}",
         summary="List collaborators",
