@@ -60,3 +60,14 @@ class ProjectServices:
             .order_by("-created_at")
         )
         return projects
+
+    async def get_dashboard(
+        self, user, project_id, period, start_date_str, end_date_str
+    ):
+        from .dashboard import SalesDashboardService
+
+        self._service = SalesDashboardService()
+
+        return await self._service.get_dashboard(
+            user, project_id, period, start_date_str, end_date_str
+        )

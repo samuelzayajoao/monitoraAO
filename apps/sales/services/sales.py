@@ -33,11 +33,11 @@ class SalesService:
             logger.error(f"Erro ao processar a venda: {e}")
             raise HttpError(500, "Não foi possivel processar a venda.")
 
-        return 201, "Success"
+        return 202, "Success"
 
-    async def get_sale(self, request, project_id):
+    async def get_sale(self, request, project_id, start_date=None, end_date=None):
         project = (
-            await Project.objects.prefetch_related("sales_set", "project_collaborator")
+            await Project.objects.prefetch_related("project_collaborator")
             .filter(
                 Q(project_collaborator__user=request.user) | Q(user=request.user),
                 id=project_id,
@@ -47,4 +47,10 @@ class SalesService:
         if not project:
             raise HttpError(404, "Project not found")
 
-        return [sale async for sale in project.sales_set.order_by("-created_at").all()]
+        from apps.sales.models import Sales
+
+        qs = Sales.objects.filter(project=project)
+        if start_date and end_date:
+            qs = qs.filter(sold_at__gte=start_date, sold_at__lte=end_date)
+
+        return [sale async for sale in qs.order_by("-sold_at")]
