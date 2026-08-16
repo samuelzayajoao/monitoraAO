@@ -19,7 +19,9 @@ class DashboardFilterSchema(Schema):
                 # Tenta fazer o parse estrito para garantir que não é um mero número/timestamp
                 datetime.fromisoformat(v.replace("Z", "+00:00"))
             except ValueError:
-                raise ValueError("Must be a valid ISO 8601 date string, not a timestamp")
+                raise ValueError(
+                    "Must be a valid ISO 8601 date string, not a timestamp"
+                )
         elif isinstance(v, (int, float)):
             raise ValueError("Numeric timestamps are not allowed. Use ISO 8601.")
         return v

@@ -9,7 +9,7 @@ from utils import DynamicRateThrottleAdvacend
 
 
 @api_controller(
-    prefix_or_class="/collaborator",
+    prefix_or_class="/members",
     tags=["Collaborators"],
     auth=AsyncJWTAuth(),
     throttle=DynamicRateThrottleAdvacend(rate="100/m", scope="collaborator"),
@@ -25,13 +25,11 @@ class CollaboratorController:
         description="Send invitation to collaborator",
         response=str,
     )
-    async def create_collaborator(self, request, payload: CollaboratorInviteSchema):
+    async def invite(self, request, payload: CollaboratorInviteSchema):
         """
         Send invitation to collaborator
         """
-        return await self.collaborator_service.create_collaborator(
-            request.user, payload
-        )
+        return await self.collaborator_service.invite(request.user, payload)
 
     @route.get(
         path="/me/invite",
@@ -39,49 +37,26 @@ class CollaboratorController:
         description="List collaborator invitations",
         response=List[CollaboratorOut],
     )
-    async def list_my_invitation(self, request):
+    async def list_invites(self, request):
         """
-        Collaborator lists invitations
+        Collaborator lists invitations (Collaborator)
         """
-        return await self.collaborator_service.list_my_invitation(request.user)
-
-    @route.delete(
-        path="/invite/{invitation_id}",
-        summary="Delete invitation by id",
-        description="Delete invitation by id",
-    )
-    async def delete_invitation(self, invitation_id: int):
-        """
-        Delete Project Collaborator invitation by id
-        """
-        return await self.collaborator_service.delete_invitation()
+        return await self.collaborator_service.list_invites(request.user)
 
     @route.put(
-        path="/me/invite/{invitation_id}/accept",
-        summary="Accept invitation by id",
-        description="Accept invitation by id",
+        path="/me/invite/{invitation_id}/{option}",
+        summary="Accept or Reject invitation by id",
+        description="Accept or Reject invitation by id",
         response=str,
     )
-    async def accept_my_invitation(self, request, invitation_id: int):
+    async def accept_or_reject_invitation(
+        self, request, option: bool, invitation_id: int
+    ):
         """
-        Collaborator accepts invitation by id
+        Collaborator accepts or reject invitation by id
         """
-        return await self.collaborator_service.accept_my_invitation(
-            request.user, invitation_id
-        )
-
-    @route.delete(
-        path="/me/invite/{invitation_id}/reject",
-        summary="Collaborator rejects invitation by id",
-        description="Collaborator rejects invitation by id",
-        response=str,
-    )
-    async def reject_my_invitation(self, request, invitation_id: int):
-        """
-        Collaborator rejects invitation by id
-        """
-        return await self.collaborator_service.reject_my_invitation(
-            request.user, invitation_id
+        return await self.collaborator_service.accept_or_reject_invitation(
+            request.auth, option, invitation_id
         )
 
     @route.get(

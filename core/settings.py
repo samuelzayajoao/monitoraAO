@@ -29,7 +29,7 @@ INSTALLED_EXTERNAL_APPS = [
     "django_celery_beat",
 ]
 
-INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales"]
+INSTALLED_PROJECT_APPS = ["apps.auths", "apps.projects", "apps.sales", "apps.notifs"]
 
 INSTALLED_APPS = (
     [
@@ -115,7 +115,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # NINJA JWT
 NINJA_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
