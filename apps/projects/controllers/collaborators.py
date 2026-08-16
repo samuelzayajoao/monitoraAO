@@ -25,13 +25,11 @@ class CollaboratorController:
         description="Send invitation to collaborator",
         response=str,
     )
-    async def create_collaborator(self, request, payload: CollaboratorInviteSchema):
+    async def invite(self, request, payload: CollaboratorInviteSchema):
         """
         Send invitation to collaborator
         """
-        return await self.collaborator_service.create_collaborator(
-            request.user, payload
-        )
+        return await self.collaborator_service.invite(request.user, payload)
 
     @route.get(
         path="/me/invite",

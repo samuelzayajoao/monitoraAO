@@ -6,7 +6,7 @@ from ninja import Query
 from ..services import ProjectServices
 from ..schemas import ProjectIn, ProjectOut, ProjectUpdate
 from ..schemas.dashboard import DashboardResponseSchema, DashboardFilterSchema
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 from utils import DynamicRateThrottleAdvacend
 

@@ -51,7 +51,7 @@ class CollaboratorService:
 
         return Response("Colaborador foi removido")
 
-    async def create_collaborator(self, user, payload):
+    async def invite(self, user, payload):
 
         project_id = payload.project_id
         email = payload.email
