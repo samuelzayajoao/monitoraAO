@@ -20,7 +20,9 @@ class ProjectServices:
     async def get_project(self, user, project_id):
         try:
             project = await Project.objects.aget(
-                Q(user=user) | Q(project_collaborator__user=user),
+                Q(user=user)
+                | Q(project_collaborator__user=user)
+                & Q(project_collaborator__status="ACCEPTED"),
                 id=project_id,
                 is_active=True,
             )
@@ -54,7 +56,10 @@ class ProjectServices:
     async def list_projects(self, user):
         projects = await sync_to_async(list)(
             Project.objects.filter(
-                Q(project_collaborator__user=user) | Q(user=user), is_active=True
+                Q(project_collaborator__user=user)
+                & Q(project_collaborator__status="ACCEPTED")
+                | Q(user=user),
+                is_active=True,
             )
             .distinct()
             .order_by("-created_at")
